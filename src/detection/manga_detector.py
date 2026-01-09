@@ -16,7 +16,7 @@ class UltralyticsDetector(BaseDetector):
         """Load YOLO model (Detection or Segmentation)."""
         print(f"🚀 Loading Ultralytics model: {model_path}")
         self.model = YOLO(model_path)
-
+    
     def detect(self, image: np.ndarray) -> List[Dict[str, Any]]:
         """
         Perform inference on the input image.

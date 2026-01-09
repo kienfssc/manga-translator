@@ -75,8 +75,8 @@ class LamaCleaner:
         img_crop = img_rgb[y1:y2, x1:x2]
         mask_crop = mask[y1:y2, x1:x2]
 
-        img_t = torch.from_numpy(img_crop).permute(2,0,1).unsqueeze(0).float().to(device) / 255.0
-        mask_t = torch.from_numpy(mask_crop).unsqueeze(0).unsqueeze(0).float().to(device) / 255.0
+        img_t = torch.from_numpy(img_crop).permute(2,0,1).unsqueeze(0).float().to(self.device) / 255.0
+        mask_t = torch.from_numpy(mask_crop).unsqueeze(0).unsqueeze(0).float().to(self.device) / 255.0
 
         with torch.no_grad():
             res_t = self.model(img_t, mask_t)
