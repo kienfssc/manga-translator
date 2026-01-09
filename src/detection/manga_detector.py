@@ -3,20 +3,51 @@ import numpy as np
 from ultralytics import YOLO
 from typing import List, Dict, Any
 from src.detection.detector import BaseDetector
+import os
+import requests
+from tqdm import tqdm
+from src.configs.config import ModelWeightsConfig
 
 
-class UltralyticsDetector(BaseDetector):
+class TextDetector_YOLO(BaseDetector):
     def __init__(self, model_path: str, conf_threshold: float = 0.3):
         self.model_path = model_path
         self.conf_threshold = conf_threshold
         self.model = None
+        if not os.path.exists(model_path):
+            self._download_weights(ModelWeightsConfig.TEXT_DETECTION_URL, model_path)
         self.load_model(model_path)
+
+    def _download_weights(self, url: str, save_path: str):
+        print(f"Downloading model weights from {url}...")
+
+        # Create directory if it doesn't exist
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+        response = requests.get(url, stream=True)
+        total_size = int(response.headers.get("content-length", 0))
+
+        # Use tqdm for a progress bar
+        with (
+            open(save_path, "wb") as file,
+            tqdm(
+                desc=os.path.basename(save_path),
+                total=total_size,
+                unit="iB",
+                unit_scale=True,
+                unit_divisor=1024,
+            ) as bar,
+        ):
+            for data in response.iter_content(chunk_size=1024):
+                size = file.write(data)
+                bar.update(size)
+        print(f"Download complete: {save_path}")
 
     def load_model(self, model_path: str):
         """Load YOLO model (Detection or Segmentation)."""
         print(f"🚀 Loading Ultralytics model: {model_path}")
         self.model = YOLO(model_path)
-    
+
     def detect(self, image: np.ndarray) -> List[Dict[str, Any]]:
         """
         Perform inference on the input image.
@@ -54,7 +85,7 @@ class UltralyticsDetector(BaseDetector):
 if __name__ == "__main__":
     # Path to your trained or downloaded YOLO model
     # Example: "yolov8n-manga.pt"
-    detector = UltralyticsDetector("models/detection/model.onnx")
+    detector = TextDetector_YOLO("checkpoints/text_det_yolo.onnx")
     img = cv2.imread("0a02c2ef_ac972d304509.jpeg")
 
     if img is not None:
