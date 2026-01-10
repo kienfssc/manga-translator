@@ -16,7 +16,7 @@ class TextSegmentor_B1(BaseSegmentor):
         self.conf_threshold = conf_threshold
         self.model_path = model_path
         if not os.path.exists(model_path):
-            self._download_weights(ModelWeightsConfig.TEXT_SEGMENTING_URL, model_path)
+            self._download_weights(ModelWeightsConfig.TEXT_SEGMENTATION_URL, model_path)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.load_model(model_path)
 

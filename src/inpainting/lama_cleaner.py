@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import requests
-import tqdm
+from tqdm import tqdm
 from src.configs.config import ModelWeightsConfig
 
 
