@@ -46,7 +46,7 @@ class TextDetector_YOLO(BaseDetector):
     def load_model(self, model_path: str):
         """Load YOLO model (Detection or Segmentation)."""
         print(f"🚀 Loading Ultralytics model: {model_path}")
-        self.model = YOLO(model_path)
+        self.model = YOLO(model=model_path, task='detect')
 
     def detect(self, image: np.ndarray) -> List[Dict[str, Any]]:
         """
